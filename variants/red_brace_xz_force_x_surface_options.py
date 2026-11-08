@@ -1,7 +1,7 @@
 """Wave-only horizontal drag and inertia on a straight x-z brace.
 
-Run: python3 brace_forces_checked.py
-Optional: python3 brace_forces_checked.py --surface instantaneous
+Run: python3 variants/red_brace_xz_force_x_surface_options.py
+Optional: python3 variants/red_brace_xz_force_x_surface_options.py --surface instantaneous
 
 Default: fixed-crest integration, z=-35 to +6 m, as requested.
 This fixed wetted extent is an approximation throughout the cycle.
