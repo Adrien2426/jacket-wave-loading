@@ -36,7 +36,7 @@ Results appear in the console and plots open in a window. Forces returned by fun
 | `brace_forces_spyder.py` | Drag, inertia and total x/z forces on a brace rising in +x; normal velocity includes u and w; fixed crest limits. Its x origin is the brace's SWL crossing. |
 | `brace_forces_checked.py` | x-z brace calculation with crest, SWL and instantaneous-surface options; rising/falling options. Its x origin is also the brace's SWL crossing. The filename does not indicate final coursework approval. |
 | `diagonal_handwritten_numpy.py` | Common-phase, u-only horizontal-force calculation for a y-z brace, using the requested rounded length conversion 1.23. |
-| `yellow_brace_xt_numpy.py` | Normal/y/z forces caused by w, as functions of constant brace position x and time t; default x = 0. Uses the earlier rising-y sign convention noted below. |
+| `yellow_brace_xt_numpy.py` | Horizontal y and vertical z drag, inertia and total caused by w; functions of constant brace position x and time t, default x = 0. Matches the corrected falling-y front brace. Normal forces remain available as reference values. |
 | `yellow_brace_vertical_velocity_numpy.py` | Earlier w-only normal/y/z calculation at x = 30; local and reference phases reported separately. Uses the earlier rising-y sign convention. |
 | `yellow_brace_numpy.py` | Earlier alternative using combined normal speed from u and w in the drag law. This is not the separate-component lecture-style model used in the later calculations. |
 
@@ -46,7 +46,27 @@ The viewer follows a 30 m by 30 m plan, 40 m water depth, brace elevations -35 m
 
 The front yellow brace is at x = 0 and falls in +y, from `(0, 0, 7)` to `(0, 30, -35)`. For this geometry, the normal contribution from upward w points towards +y and +z.
 
-**Coordinate reconciliation still needed:** the two saved w-only yellow-brace scripts retain the earlier rising-y convention, with the positive normal towards -y and +z. Their y-component signs do not match the corrected viewer. The files are preserved as developed; reverse the y-component signs and update their normal-direction labels when adopting the viewer's falling-y geometry. The normal-force and z-force magnitudes are unchanged by that orientation reversal. The x-z scripts use a different horizontal origin from the viewer, so reference phases also need a consistent origin before being compared.
+### Yellow brace: separate the force caused by w into y and z
+
+`yellow_brace_xt_numpy.py` reports the horizontal y and vertical z components separately. Both drag and inertia are first calculated in the normal direction using the existing w-only scalar model, then resolved geometrically. This does not introduce a new hydrodynamic model.
+
+With alpha = atan(42/30) = 54.4623 degrees, the positive unit normal for the front brace is `(0, sin(alpha), cos(alpha))`. For each of drag, inertia and their simultaneous total:
+
+- `Fy_from_w = Fn_from_w * sin(alpha)` (horizontal, along y).
+- `Fz_from_w = Fn_from_w * cos(alpha)` (vertical, along z).
+- `Fx_from_w = 0` for this normal-force contribution.
+
+The positive y and z peaks of each force term occur together because they are positive constant multiples of the same signed normal force. Drag, inertia and total have different peak phases. Using the saved fixed-crest parameters at x = 0:
+
+| Force caused by w | Maximum +y (kN) | Maximum +z (kN) | Local phase (degrees) |
+| --- | ---: | ---: | ---: |
+| Drag | 52.04 | 37.17 | 0.00 |
+| Inertia | 20.29 | 14.49 | 270.00 |
+| Total at the same instant | 54.02 | 38.58 | 348.76 |
+
+The script plots y and z in separate panels and prints the simultaneous drag/inertia values at maximum total. The y signs now match the viewer; normal and z magnitudes and integration limits are unchanged.
+
+**Earlier versions:** `yellow_brace_vertical_velocity_numpy.py` is retained with the earlier rising-y convention and its positive normal towards -y and +z. Use `yellow_brace_xt_numpy.py` for the corrected front-brace geometry. The x-z scripts use a different horizontal origin from the viewer, so reference phases need a consistent origin before being compared.
 
 The brace scripts generally use the requested fixed integration limits z = -35 to +6 m for both drag and inertia throughout the cycle. This is a fixed-crest approximation, not an instantaneous wetted-length model. Above-SWL evaluations extend the linear-wave kinematics. The checked script exposes alternative surface choices; select them explicitly rather than comparing different choices as if they were equivalent.
 
